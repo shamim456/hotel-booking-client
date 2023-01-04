@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import HostYourHome from "./Component/HostYourHome/HostYourHome";
 import Navbar from "./Component/Shared/Navbar";
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
       <Navbar></Navbar>
       <div className="divider"></div>
       <Routes>
-        <Route></Route>
+        <Route path="/hostyourhome" element={<HostYourHome></HostYourHome>} ></Route>
       </Routes>
     </div>
   );
