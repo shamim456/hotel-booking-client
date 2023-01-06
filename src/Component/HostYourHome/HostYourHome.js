@@ -1,13 +1,32 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useState } from "react";
+import { set, useForm } from "react-hook-form";
 
 const HostYourHome = () => {
+  const [districs, setDistrics] = useState([]);
+
+  // react hook form
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
   const onSubmit = (data) => console.log(data);
+
+  //fetch distric data
+  useEffect(() => {
+    fetch("https://parseapi.back4app.com/classes/City?limit=65&order=name", {
+      headers: {
+        "X-Parse-Application-Id": "njETZajOzoVxthoGdgRJ2QKYlzOjidPfH0fyyKQN", // This is the fake app's application id
+        "X-Parse-Master-Key": "ZWdootuhzatrHdTOVCtLm3EHNAwntUeUXIf4OY5E", // This is the fake app's readonly master key
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setDistrics(data.results));
+  }, []);
+
+console.log(districs)
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -62,12 +81,8 @@ const HostYourHome = () => {
           <span className="label-text">What Is Your Hotel Location?</span>
         </label>
         <select className="select select-bordered w-full max-w-xs">
-          <option selected>
-            Dhaka
-          </option>
-          <option>Faridpur Sadar, Faridpur</option>
-          <option>Rajbari Sadar , Rajbari</option>
-          <option>Barishal Sadar, Barishal</option>
+          <option selected>Dhaka, Bangladesh</option>
+          {districs.map(distric => <option key={distric.cityId}>{`${distric.name}, ${distric.country}`}</option>)}
         </select>
 
         {/*Hotel Single Room Input*/}
@@ -263,8 +278,32 @@ const HostYourHome = () => {
             )}
           </label>
         </div>
+        {/*Hotel Contact Number Input*/}
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Phone Number?</span>
+          </label>
+          <input
+            type="text"
+            placeholder="01700000000"
+            className="input input-bordered w-full max-w-xs"
+            {...register("phoneNumber", {
+              required: {
+                value: true,
+                message: "Phone Number Is Required",
+              },
+            })}
+          />
+          <label className="label">
+            {errors.cleaningFee?.type === "required" && (
+              <span className="label-text-alt">
+                {errors.cleaningFee.message}
+              </span>
+            )}
+          </label>
+        </div>
 
-        <input type="submit" />
+        <input type="submit" className="btn btn-primary" />
       </form>
     </div>
   );
